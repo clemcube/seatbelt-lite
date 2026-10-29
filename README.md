@@ -41,7 +41,7 @@ python3 tests/run_tests.py
 
 ## The full version
 
-[Seatbelt](https://seatbelt-hooks.achat-895.workers.dev) adds a longer shell list (`reset --hard`, `pkill -f`, `curl | sh`, `cat .env`, `supabase db reset --linked`...), a guard that refuses API keys in code, a SQL guard for Supabase RLS leaks through MCP, and a Stop hook that sends Claude back to check when it says "it's live" without verifying. 14 €, paid once.
+[Seatbelt](https://seatbelt-hooks.achat-895.workers.dev/?ref=github) adds a longer shell list (`reset --hard`, `pkill -f`, `curl | sh`, `cat .env`, `supabase db reset --linked`...), a guard that refuses API keys in code, a SQL guard for Supabase RLS leaks through MCP, and a Stop hook that sends Claude back to check when it says "it's live" without verifying. 14 €, paid once.
 
 ## License
 
