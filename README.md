@@ -23,7 +23,7 @@ When it fires, Claude reads the reason and usually picks a safer way on the next
 Inside Claude Code:
 
 ```
-/plugin marketplace add OWNER/seatbelt-lite
+/plugin marketplace add clemcube/seatbelt-lite
 /plugin install seatbelt-lite@seatbelt
 ```
 
