@@ -1,12 +1,14 @@
 # Seatbelt Lite
 
-A Claude Code plugin that blocks three commands before they run:
+A Claude Code plugin for the two mistakes auto mode doesn't catch, plus three shell guards.
 
-- `rm -rf` on `/`, `~`, `$HOME` or the current folder
-- `git push --force` (and `-f`, `--force-with-lease`)
-- `git add -A` / `git add .` / `git add --all`
+**"It's live" without checking.** A Stop hook reads the current turn. If a deploy ran (`vercel`, `wrangler deploy`, `netlify deploy`, `fly deploy`, `firebase deploy`) and the final message says "live" or "deployed" with no `curl`, `vercel inspect` or browser visit after it, Claude is sent back to check before it answers you.
 
-When it fires, Claude reads the reason and usually picks a safer way on the next try:
+**A Supabase view anon can read.** A PreToolUse hook reads the SQL Claude sends through MCP tools and refuses `create view public.…` without `security_invoker = true`. Without it, the view runs with its creator's rights, ignores RLS, and the anon key in your frontend can read it.
+
+**Shell guards.** `rm -rf` on `/`, `~`, `$HOME` or the current folder, `git push --force`, and `git add -A` / `git add .`.
+
+When a hook fires, Claude reads the reason and usually fixes its own approach on the next try:
 
 ```
 ● Bash(git add -A && git commit -m "fix header spacing")
@@ -29,9 +31,9 @@ Inside Claude Code:
 
 Needs Python 3. No dependency, no network call.
 
-## Why these three
+## Why
 
-I run Claude Code all day on live websites with permission prompts off. The `git add -A` one is real: another Claude session was working in the same folder and half of its unfinished changes ended up in my commit. A line in CLAUDE.md didn't stop it. A hook runs before the command, every time.
+I run Claude Code all day on live websites. Each of these happened to me: a deploy announced as live that had failed at the build step, a view in `public` that anon could read until the Supabase advisor flagged it the next day, and another session's unfinished work swept into my commit by `git add -A`. The rules were in CLAUDE.md. A hook runs every time.
 
 ## Check it
 
@@ -41,7 +43,7 @@ python3 tests/run_tests.py
 
 ## The full version
 
-[Seatbelt](https://seatbelt-hooks.achat-895.workers.dev/?ref=github) adds a longer shell list (`reset --hard`, `pkill -f`, `curl | sh`, `cat .env`, `supabase db reset --linked`...), a guard that refuses API keys in code, a SQL guard for Supabase RLS leaks through MCP, and a Stop hook that sends Claude back to check when it says "it's live" without verifying. 14 €, paid once.
+[Seatbelt](https://seatbelt-hooks.achat-895.workers.dev/?ref=github) goes further: the SQL guard also covers `SECURITY DEFINER` functions open to anon, tables created without RLS, and `DELETE`/`UPDATE` without `WHERE`; the shell guard adds `reset --hard`, `pkill -f`, `curl | sh`, `cat .env`, `supabase db reset --linked` and more; a secret guard refuses API keys written into code. 14 €, paid once.
 
 ## License
 

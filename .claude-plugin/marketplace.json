@@ -1,11 +1,13 @@
 {
   "name": "seatbelt",
-  "owner": { "name": "Clément" },
+  "owner": {
+    "name": "Clément"
+  },
   "plugins": [
     {
       "name": "seatbelt-lite",
       "source": "./",
-      "description": "Blocks rm -rf on / or ~, force push and git add -A before Claude Code runs them."
+      "description": "Makes Claude Code prove a deploy before saying it is live, refuses Supabase views anon can read, and blocks rm -rf on root folders, force push and adding every file at once."
     }
   ]
 }
