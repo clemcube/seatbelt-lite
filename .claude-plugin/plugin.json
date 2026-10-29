@@ -1,0 +1,8 @@
+{
+  "name": "seatbelt-lite",
+  "version": "1.0.0",
+  "description": "Blocks rm -rf on / or ~, force push and git add -A before Claude Code runs them.",
+  "author": { "name": "Clément" },
+  "homepage": "https://seatbelt-hooks.achat-895.workers.dev",
+  "license": "MIT"
+}

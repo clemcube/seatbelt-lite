@@ -1,0 +1,11 @@
+{
+  "name": "seatbelt",
+  "owner": { "name": "Clément" },
+  "plugins": [
+    {
+      "name": "seatbelt-lite",
+      "source": "./",
+      "description": "Blocks rm -rf on / or ~, force push and git add -A before Claude Code runs them."
+    }
+  ]
+}
