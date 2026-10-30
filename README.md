@@ -43,7 +43,7 @@ python3 tests/run_tests.py
 
 ## The full version
 
-[Seatbelt](https://seatbelt-hooks.achat-895.workers.dev/?ref=github) goes further: the SQL guard also covers `SECURITY DEFINER` functions open to anon, tables created without RLS, and `DELETE`/`UPDATE` without `WHERE`; the shell guard adds `reset --hard`, `pkill -f`, `curl | sh`, `cat .env`, `supabase db reset --linked` and more; a secret guard refuses API keys written into code. 14 €, paid once.
+[Seatbelt](https://seatbelt-hooks.seatbelt-site.workers.dev/?ref=github) goes further: the SQL guard also covers `SECURITY DEFINER` functions open to anon, tables created without RLS, and `DELETE`/`UPDATE` without `WHERE`; the shell guard adds `reset --hard`, `pkill -f`, `curl | sh`, `cat .env`, `supabase db reset --linked` and more; a secret guard refuses API keys written into code. 14 €, paid once.
 
 ## License
 
