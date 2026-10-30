@@ -20,6 +20,12 @@ SQL = [
     ("CREATE OR REPLACE VIEW public.quotes AS select * from q", 2),
     ("create view public.v with (security_invoker = true) as select 1", 0),
     ("create view private.v as select 1", 0),
+    ("create view v as select 1", 2),
+    ('create view "public"."v" as select 1', 2),
+    ("create materialized view public.v as select 1", 2),
+    ("create view public.v with (security_invoker = false) as select 1", 2),
+    ("create view private.v as select * from public.t", 0),
+    ("create view public.a with (security_invoker = on) as select 1; create view public.b as select 1", 2),
     ("select * from public.v", 0),
 ]
 

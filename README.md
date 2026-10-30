@@ -1,10 +1,10 @@
 # Seatbelt Lite
 
-A Claude Code plugin for the two mistakes auto mode doesn't catch, plus three shell guards.
+A Claude Code plugin for two mistakes that kept coming back on my sites, plus three shell guards.
 
 **"It's live" without checking.** A Stop hook reads the current turn. If a deploy ran (`vercel`, `wrangler deploy`, `netlify deploy`, `fly deploy`, `firebase deploy`) and the final message says "live" or "deployed" with no `curl`, `vercel inspect` or browser visit after it, Claude is sent back to check before it answers you.
 
-**A Supabase view anon can read.** A PreToolUse hook reads the SQL Claude sends through MCP tools and refuses `create view public.…` without `security_invoker = true`. Without it, the view runs with its creator's rights, ignores RLS, and the anon key in your frontend can read it.
+**A Supabase view anon can read.** A PreToolUse hook reads the SQL Claude sends through MCP tools and refuses a view in `public` (or with no schema) unless it sets `security_invoker = true`. Without it, the view runs with its creator's rights, ignores RLS, and the anon key in your frontend can read it.
 
 **Shell guards.** `rm -rf` on `/`, `~`, `$HOME` or the current folder, `git push --force`, and `git add -A` / `git add .`.
 
@@ -33,7 +33,7 @@ Needs Python 3. No dependency, no network call.
 
 ## Why
 
-I run Claude Code all day on live websites. Each of these happened to me: a deploy announced as live that had failed at the build step, a view in `public` that anon could read until the Supabase advisor flagged it the next day, and another session's unfinished work swept into my commit by `git add -A`. The rules were in CLAUDE.md. A hook runs every time.
+I run Claude Code all day on live websites. Each of these happened to me: a deploy that exited 0 while production still served the old bundle 13 minutes later, a view in `public` that anon could read until a check found it the next day, and another session's unfinished work swept into my commit by `git add -A`. The rules were in CLAUDE.md. A hook runs every time.
 
 ## Check it
 
