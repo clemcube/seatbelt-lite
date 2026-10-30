@@ -56,6 +56,15 @@ STOP = [
     ("no deploy this turn", [user("old")] + DEPLOY + [say("done")] + [user("explain")] +
      [say("It's live since yesterday.")], False),
     ("no claim", [user("go")] + DEPLOY + [say("Deploy command finished, checking next.")], False),
+    ("vercel inspect is the check", [user("go"), tool("vercel --prod"), result(), tool("vercel inspect https://a.vercel.app"),
+                                     result(), say("It's live.")], False),
+    ("reading vercel.json is no deploy", [user("go"), tool("cat vercel.json"), result(), say("It's deployed on Vercel.")], False),
+    ("vercel logs is no deploy", [user("go"), tool("vercel logs https://a.vercel.app"), result(), say("It's live.")], False),
+    ("curl chained after deploy", [user("go"), tool("vercel --prod && curl -sI https://a.com"), result(), say("It's live.")], False),
+    ("curl chained before deploy", [user("go"), tool("curl -sI https://a.com && vercel --prod"), result(), say("It's live.")], True),
+    ("npx vercel deploy", [user("go"), tool("npx vercel deploy --prod"), result(), say("It's live.")], True),
+    ("bare vercel", [user("go"), tool("vercel"), result(), say("It's live.")], True),
+    ("curl on localhost is no proof", [user("go")] + DEPLOY + [tool("curl -sI http://localhost:3000"), result(), say("It's live.")], True),
 ]
 
 

@@ -4,8 +4,12 @@ import json
 import re
 import sys
 
-DEPLOY = re.compile(r"\b(vercel|wrangler\s+(pages\s+)?deploy|netlify\s+deploy|fly\s+deploy|firebase\s+deploy)\b", re.I)
+DEPLOY = re.compile(
+    r"^\s*(\w+=\S*\s+)*(npx\s+(-y\s+)?)?"
+    r"(vercel(@\S+)?(\s+(deploy|promote|--prod|--yes|-y|--prebuilt)\b|\s*$)"
+    r"|wrangler(@\S+)?\s+(pages\s+)?deploy\b|netlify\s+deploy\b|fly\s+deploy\b|firebase\s+deploy\b)", re.I)
 CHECK = re.compile(r"\b(curl|wget|vercel\s+inspect)\b|navigate|WebFetch", re.I)
+LOCAL = re.compile(r"\b(localhost|127\.0\.0\.1|0\.0\.0\.0)\b|\[::1\]", re.I)
 CLAIM = re.compile(r"\b(it'?s live|is live|now live|deployed)\b", re.I)
 NEGATION = re.compile(r"(\bnot|n't|\bnever)\b[^.\n]{0,20}\b(live|deployed)\b", re.I)
 
@@ -24,6 +28,12 @@ def current_turn(path):
     return entries[start + 1:]
 
 
+def steps(block):
+    if block.get("name") == "Bash":
+        return re.split(r"&&|\|\||[;|\n]", (block.get("input") or {}).get("command", ""))
+    return [block.get("name", "")]
+
+
 def main():
     try:
         event = json.load(sys.stdin)
@@ -35,7 +45,7 @@ def main():
                 if not isinstance(block, dict):
                     continue
                 if block.get("type") == "tool_use":
-                    actions.append(block.get("name", "") + " " + json.dumps(block.get("input")))
+                    actions.extend(steps(block))
                 elif block.get("type") == "text":
                     last_text = block.get("text", "")
     except Exception:
@@ -43,7 +53,7 @@ def main():
     deploys = [i for i, a in enumerate(actions) if DEPLOY.search(a)]
     if not deploys or not CLAIM.search(last_text) or NEGATION.search(last_text):
         return 0
-    if any(CHECK.search(a) for a in actions[deploys[-1] + 1:]):
+    if any(CHECK.search(a) and not LOCAL.search(a) for a in actions[deploys[-1] + 1:]):
         return 0
     print(json.dumps({"decision": "block", "reason":
         "Seatbelt: you said it is deployed or live, but nothing checked the result after the last deploy. "

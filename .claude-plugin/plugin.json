@@ -1,6 +1,6 @@
 {
   "name": "seatbelt-lite",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Makes Claude Code prove a deploy before saying it is live, refuses Supabase views anon can read, and blocks rm -rf on root folders, force push and adding every file at once.",
   "author": {
     "name": "Clément"
