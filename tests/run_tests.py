@@ -101,6 +101,21 @@ for label, entries, expected in STOP:
         failures.append(f"stop {label}: expected block={expected}")
 if stop_blocks(STOP[0][1], active=True):
     failures.append("stop: must not block when stop_hook_active")
+def stop_final(entries, final):
+    with tempfile.NamedTemporaryFile("w", suffix=".jsonl", delete=False) as f:
+        f.write("\n".join(json.dumps(e) for e in entries))
+    out = run("proof_lite.py", {"transcript_path": f.name, "last_assistant_message": final}).stdout
+    Path(f.name).unlink()
+    return '"block"' in out
+
+
+LAGGING = [user("ship it"), tool("vercel --prod"), result()]
+if not stop_final(LAGGING, "It's live."):
+    failures.append("stop: final message missing from the transcript must still block")
+if stop_final(LAGGING, "The command finished."):
+    failures.append("stop: final message without a claim must pass")
+if stop_final(LAGGING + [{"type": "api-request-blob", "message": {"content": [{"type": "text", "text": "It's live."}]}}], "The command finished."):
+    failures.append("stop: request copies in the transcript are not Claude's answer")
 if run("proof_lite.py", {"transcript_path": "/nonexistent"}).stdout:
     failures.append("stop: must fail open on a missing transcript")
 

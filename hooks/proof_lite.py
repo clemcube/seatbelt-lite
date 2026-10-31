@@ -41,6 +41,8 @@ def main():
             return 0
         actions, last_text = [], ""
         for entry in current_turn(event["transcript_path"]):
+            if entry.get("type") != "assistant":
+                continue
             for block in (entry.get("message") or {}).get("content") or []:
                 if not isinstance(block, dict):
                     continue
@@ -48,6 +50,8 @@ def main():
                     actions.extend(steps(block))
                 elif block.get("type") == "text":
                     last_text = block.get("text", "")
+        # The final message can reach the transcript after this hook runs.
+        last_text = event.get("last_assistant_message") or last_text
     except Exception:
         return 0
     deploys = [i for i, a in enumerate(actions) if DEPLOY.search(a)]
